@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: instructor-service
+          uri: lb://instructor-service
+          predicates:
+            - Path=/api/instructors/**
+        - id: course-service
+          uri: lb://course-service
+          predicates:
+            - Path=/api/courses/**
+      server:
+        webflux:
+          routes:
+            - id: instructor-service
+              uri: lb://instructor-service
+              predicates:
+                - Path=/api/instructors/**
+            - id: course-service
+              uri: lb://course-service
+              predicates:
+                - Path=/api/courses/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
